@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AlfaAcquiring;
 
 use AlfaAcquiring\HttpClient\CurlClient;
+use AlfaAcquiring\Model\Customer;
+use AlfaAcquiring\Model\Order;
 
 class RbsClient
 {
@@ -18,7 +20,6 @@ class RbsClient
     private const ENDPOINT_TEST = 'https://web.rbsuat.com/ab_by/rest/';
 
     private const BYN_CURRENCY = 933;
-    private const DEFAULT_MEASUREMENT = 'шт';
 
     private const LANGUAGE_BE = 'by';
     private const LANGUAGE_EN = 'en';
@@ -109,17 +110,22 @@ class RbsClient
         return (array) $this->client->getResponse();
     }
 
-    public function registerOrder(string $order_number, int $amount, string $return_url = ''): array
+    public function registerOrder(Order $order, ?Customer $details): array
     {
         $fields = [
-            'orderNumber' => $order_number . '_'. time(),
-            'amount' => $amount,
-            'returnUrl' => $return_url,
+            'orderNumber' => $order->getOrderNumber(),
+            'amount' => $order->getAmount(),
+            'returnUrl' => $order->getReturnUrl(),
             'jsonParams' => json_encode(self::HTTP_HEADERS),
         ];
 
         if ($this->currency > 0) {
             $fields['currency'] = $this->currency;
+        }
+
+        if (null !== $details && $details->isValid()) {
+            $fields['email'] = $details->getEmail();
+            $fields['phone'] = $details->getPhone();
         }
 
         $method = self::PAYMENT_STAGE_TWO == $this->paymentStage ? 'registerPreAuth.do' : 'register.do';

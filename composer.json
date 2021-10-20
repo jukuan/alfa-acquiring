@@ -9,6 +9,10 @@
             "email": "i@juljan.by"
         }
     ],
+    "keywords": [
+        "Alfa-Bank",
+        "internet acquiring"
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "sort-packages": true,

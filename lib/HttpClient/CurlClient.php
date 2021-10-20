@@ -13,7 +13,7 @@ class CurlClient
     /**
      * @var mixed
      */
-    private $response;
+    private $response = null;
 
     /**
      * @var string[]
@@ -21,7 +21,7 @@ class CurlClient
     private array $httpHeaders = [];
 
     /**
-     * @param string[] $postFields
+     * @param array $postFields
      *
      * @return array
      */
@@ -54,11 +54,9 @@ class CurlClient
 
     private function decodeResponse(?string $response): void
     {
-        if ($response) {
-            $response = json_decode($response, true);
+        if (null !== $response && '' !== $response) {
+            $this->response = json_decode($response, true) ?: null;
         }
-
-        $this->response = $response ?: null;
     }
 
     public function execute(string $url, array $postFields = []): CurlClient
