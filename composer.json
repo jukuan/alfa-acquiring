@@ -1,0 +1,29 @@
+{
+    "name": "jukuan/alfa-acquiring",
+    "description": "Internet Acquiring helper for AlfaBank (Belarus), non-official.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Julian",
+            "email": "i@juljan.by"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "sort-packages": true,
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "AlfaAcquiring\\": "lib/"
+        }
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.10"
+    }
+}
