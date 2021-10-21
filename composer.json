@@ -24,8 +24,14 @@
     },
     "autoload": {
         "psr-4": {
-            "AlfaAcquiring\\": "lib/",
-            "AlfaAcquiring\\Model\\": "lib/Model"
+            "AlfaAcquiring\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Stripe\\": [
+                "tests/"
+            ]
         }
     },
     "require-dev": {
