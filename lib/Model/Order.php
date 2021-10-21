@@ -12,9 +12,28 @@ class Order
 
     private string $returnUrl = '';
 
+    private ?Customer $customer = null;
+
     public function __construct(int $amount)
     {
         $this->amount = $amount > 0 ? $amount : 0;
+    }
+
+    public static function forCustomer(int $amount, ?string $email, ?string $phone = null): Order
+    {
+        $order = new Order($amount);
+
+        if (null !== $email || null !== $phone) {
+            $customer = new Customer($email, $phone);
+
+            if ($customer->isValid()) {
+                $order->setCustomer($customer);
+            } else {
+                // TODO: log the error
+            }
+        }
+
+        return $order;
     }
 
     public function isValid(): bool
@@ -90,5 +109,40 @@ class Order
         $this->returnUrl = $returnUrl;
 
         return $this;
+    }
+
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
+    }
+
+    public function hasCustomer(): bool
+    {
+        return null !== $this->customer;
+    }
+
+    public function setCustomer(?Customer $customer): Order
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        if (null === $this->customer) {
+            return null;
+        }
+
+        return $this->getCustomer()->getEmail();
+    }
+
+    public function getPhone(): ?string
+    {
+        if (null === $this->customer) {
+            return null;
+        }
+
+        return $this->getCustomer()->getPhone();
     }
 }

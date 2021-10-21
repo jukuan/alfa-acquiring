@@ -81,21 +81,26 @@ class RbsClient
         return $this->errorMessage;
     }
 
+    private function prepareMethodUrl(string $method): string
+    {
+        $url = $this->isTestMode ? self::ENDPOINT_TEST : self::ENDPOINT_PROD;
+
+        return $url . $method;
+    }
+
     public function doMethod(string $method, array $params = []): bool
     {
         $this->reset();
 
-        $url = $this->isTestMode ? self::ENDPOINT_TEST : self::ENDPOINT_PROD;
-        $method = $url . $method;
-
         $params['userName'] = $this->login;
         $params['password'] = $this->password;
-        $params['language'] = $this->language ?: self::DEFAULT_LANGUAGE;
+        $params['language'] = strlen($this->language) > 0 ? $this->language : self::DEFAULT_LANGUAGE;
 
-        $this->client->execute($method, $params);
+        $this->client->execute($this->prepareMethodUrl($method), $params);
 
         if ($this->client->hasError()) {
             $this->errorMessage = $this->client->getErrorDetails();
+
             return false;
         }
 
@@ -111,27 +116,28 @@ class RbsClient
         return (array) $this->client->getResponse();
     }
 
-    public function registerOrder(Order $order, ?Customer $details = null): OrderRegistration
+    private function getOrderRegisterMethod(): string
+    {
+        return self::PAYMENT_STAGE_TWO == $this->paymentStage ? 'registerPreAuth.do' : 'register.do';
+    }
+
+    public function registerOrder(Order $order): OrderRegistration
     {
         $fields = [
             'orderNumber' => $order->getOrderNumber(),
             'amount' => $order->getAmount(),
             'returnUrl' => $order->getReturnUrl(),
             'jsonParams' => json_encode(self::HTTP_HEADERS),
+            'email' => $order->getEmail(),
+            'phone' => $order->getPhone(),
+            'currency' => $this->currency,
         ];
 
-        if ($this->currency > 0) {
-            $fields['currency'] = $this->currency;
-        }
+        $fields = array_filter($fields, static function ($value) {
+            return 0 !== $value && null !== $value && '' !== $value;
+        });
 
-        if (null !== $details && $details->isValid()) {
-            $fields['email'] = $details->getEmail();
-            $fields['phone'] = $details->getPhone();
-        }
-
-        $method = self::PAYMENT_STAGE_TWO == $this->paymentStage ? 'registerPreAuth.do' : 'register.do';
-
-        if (!$this->doMethod($method, $fields)) {
+        if (!$this->doMethod($this->getOrderRegisterMethod(), $fields)) {
             return OrderRegistration::initialiseFailed($this->errorMessage);
         }
 

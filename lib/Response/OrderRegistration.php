@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\Response;
 
+use Exception;
+
 class OrderRegistration
 {
     /**
@@ -11,33 +13,80 @@ class OrderRegistration
      */
     private array $fields;
 
-    private string $error;
+    private ?Exception $error = null;
+
+    private string $orderId = '';
+
+    private string $formUrl = '';
 
     public function __construct(array $fields)
     {
         $this->fields = $fields;
 
-        $code = $fields['errorCode'] ?? '';
-        $message = $fields['errorMessage'] ?? '';
+        if (isset($fields['errorCode']) || isset($fields['errorMessage'])) {
+            $this->setErrorFields($fields);
+        } else {
+            $this->orderId = $fields['orderId'] ?? '';
+            $this->formUrl = $fields['formUrl'] ?? '';
+        }
     }
 
-    public static function initialiseFailed(string $error): OrderRegistration
+    public static function initialiseFailed(string $errorMsg): OrderRegistration
     {
-        return (new OrderRegistration([]))->setError($error);
+        return (new OrderRegistration([]))
+            ->setErrorFields([
+                'errorMessage' => $errorMsg
+            ]);
+    }
+
+    private function setErrorFields(array $fields): OrderRegistration
+    {
+        $this->error = new Exception(
+            $fields['errorMessage'] ?? '',
+            $fields['errorCode'] ?? 0
+        );
+
+        return $this;
+    }
+
+    public function hasError(): bool
+    {
+        return null !== $this->error;
+    }
+
+    private function hasOrderId(): bool
+    {
+        return strlen($this->orderId) > 0;
+    }
+
+    private function hasFormUrl(): bool
+    {
+        return strlen($this->formUrl) > 0;
+    }
+
+    public function getOrderId(): string
+    {
+        return $this->orderId;
+    }
+
+    public function getFormUrl(): string
+    {
+        return $this->formUrl;
+    }
+
+    public function isValid(): bool
+    {
+        return !$this->hasError() && $this->hasOrderId() && $this->hasFormUrl();
     }
 
     /**
-     * @return string
+     * @deprecated
+     * TODO: check if we really need that
+     *
+     * @return string[]
      */
-    public function getError(): string
+    public function getResponseFields(): array
     {
-        return $this->error;
-    }
-
-    private function setError(string $error): OrderRegistration
-    {
-        $this->error = $error;
-
-        return $this;
+        return $this->fields;
     }
 }
