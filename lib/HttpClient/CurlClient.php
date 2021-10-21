@@ -20,17 +20,13 @@ class CurlClient
      */
     private array $httpHeaders = [];
 
-    /**
-     * @param array $postFields
-     *
-     * @return array
-     */
-    private function buildCurlOptions(array $postFields = []): array
+    private function buildCurlOptions(string $url, array $postFields = []): array
     {
         $options = [
             CURLOPT_VERBOSE => true,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING, 'gzip',
             CURLOPT_ENCODING, '',
@@ -67,7 +63,7 @@ class CurlClient
             $this->setError('Cannot initialise curl');
         }
 
-        $options = $this->buildCurlOptions($postFields);
+        $options = $this->buildCurlOptions($url, $postFields);
 
         if (!curl_setopt_array($handle, $options)) {
             $this->setError('Cannot set curl options', $handle);

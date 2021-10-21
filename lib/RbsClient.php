@@ -7,6 +7,7 @@ namespace AlfaAcquiring;
 use AlfaAcquiring\HttpClient\CurlClient;
 use AlfaAcquiring\Model\Customer;
 use AlfaAcquiring\Model\Order;
+use AlfaAcquiring\Response\OrderRegistration;
 
 class RbsClient
 {
@@ -110,7 +111,7 @@ class RbsClient
         return (array) $this->client->getResponse();
     }
 
-    public function registerOrder(Order $order, ?Customer $details): array
+    public function registerOrder(Order $order, ?Customer $details = null): OrderRegistration
     {
         $fields = [
             'orderNumber' => $order->getOrderNumber(),
@@ -131,9 +132,9 @@ class RbsClient
         $method = self::PAYMENT_STAGE_TWO == $this->paymentStage ? 'registerPreAuth.do' : 'register.do';
 
         if (!$this->doMethod($method, $fields)) {
-            return [];
+            return OrderRegistration::initialiseFailed($this->errorMessage);
         }
 
-        return (array) $this->client->getResponse();
+        return new OrderRegistration((array) $this->client->getResponse());
     }
 }
