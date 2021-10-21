@@ -134,7 +134,7 @@ class Order
             return null;
         }
 
-        return $this->getCustomer()->getEmail();
+        return $this->customer->getEmail();
     }
 
     public function getPhone(): ?string
@@ -143,6 +143,6 @@ class Order
             return null;
         }
 
-        return $this->getCustomer()->getPhone();
+        return $this->customer->getPhone();
     }
 }

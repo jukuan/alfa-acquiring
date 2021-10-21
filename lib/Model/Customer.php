@@ -75,9 +75,13 @@ class Customer
         return $this->email;
     }
 
-    public function setEmail(string $email): Customer
+    public function setEmail(?string $email): Customer
     {
-        $this->email = self::prepareEmail($email);
+        if (null === $email || '' === $email) {
+            $this->email = null;
+        } else {
+            $this->email = self::prepareEmail($email);
+        }
 
         return $this;
     }
@@ -87,9 +91,13 @@ class Customer
         return $this->phone;
     }
 
-    public function setPhone(string $phone): Customer
+    public function setPhone(?string $phone): Customer
     {
-        $this->phone = self::preparePhone($phone);
+        if (null === $phone || '' === $phone) {
+            $this->phone = null;
+        } else {
+            $this->phone = self::preparePhone($phone);
+        }
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\RequestHandler;
 
+use AlfaAcquiring\HttpRequest\OrderRegisterRequest;
 use AlfaAcquiring\Model\Order;
 use AlfaAcquiring\RbsClient;
 use AlfaAcquiring\Response\OrderRegistration;
@@ -12,37 +13,26 @@ use Exception;
 
 class OrderRegisterFormHandler
 {
-    private const DEFAULT_FIELD_AMOUNT = 'amount';
-    private const DEFAULT_FIELD_EMAIL = 'email';
-    private const DEFAULT_FIELD_PHONE = 'phone';
-
     private RbsClient $rbsClient;
 
     private ?Exception $error = null;
 
     private ?OrderRegistration $response = null;
 
-    /**
-     * @var string[]
-     */
-    private array $inputFields = [
-        'amount' => self::DEFAULT_FIELD_AMOUNT,
-        'email' => self::DEFAULT_FIELD_EMAIL,
-        'phone' => self::DEFAULT_FIELD_PHONE,
-    ];
-
     public function __construct(RbsClient $rbsClient)
     {
         $this->rbsClient = $rbsClient;
     }
 
-    public function processPostRequest(?array $request = null): bool
+    public function processPostRequest(): bool
     {
         if (!$this->isPostRequest()) {
             return false;
         }
 
-        return $this->processRequest($request ?? $_REQUEST) &&
+        $request = new OrderRegisterRequest();
+
+        return $this->processRequest($request) &&
             $this->hasValidResponse();
     }
 
@@ -60,26 +50,11 @@ class OrderRegisterFormHandler
         return 'POST' === strtoupper(($_SERVER['REQUEST_METHOD'] ?? ''));
     }
 
-    public function configureInputNames(array $fields): OrderRegisterFormHandler
+    private function processRequest(OrderRegisterRequest $request): bool
     {
-        $this->inputFields = array_merge(
-            $this->inputFields,
-            $fields
-        );
-
-        return $this;
-    }
-
-    private function getInputName(string $key): string
-    {
-        return $this->inputFields[$key] ?? $key;
-    }
-
-    private function processRequest(array $fields): bool
-    {
-        $amount = $fields[$this->getInputName('amount')] ?? 0;
-        $email = $fields[$this->getInputName('email')] ?? null;
-        $phone = $fields[$this->getInputName('phone')] ?? null;
+        $amount = $request->getAmount();
+        $email = $request->getEmail();
+        $phone = $request->getPhone();
 
         $order = Order::forCustomer($amount, $email, $phone);
 
@@ -115,7 +90,7 @@ class OrderRegisterFormHandler
             return '';
         }
 
-        return $this->response->getOrderId();
+        return $this->response->getFormUrl();
     }
 
     public function doRedirect(): void

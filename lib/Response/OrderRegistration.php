@@ -19,6 +19,9 @@ class OrderRegistration
 
     private string $formUrl = '';
 
+    /**
+     * @param array<array-key, mixed> $fields
+     */
     public function __construct(array $fields)
     {
         $this->fields = $fields;
@@ -26,8 +29,8 @@ class OrderRegistration
         if (isset($fields['errorCode']) || isset($fields['errorMessage'])) {
             $this->setErrorFields($fields);
         } else {
-            $this->orderId = $fields['orderId'] ?? '';
-            $this->formUrl = $fields['formUrl'] ?? '';
+            $this->orderId = (string) ($fields['orderId'] ?? '');
+            $this->formUrl = (string) ($fields['formUrl'] ?? '');
         }
     }
 
@@ -42,8 +45,8 @@ class OrderRegistration
     private function setErrorFields(array $fields): OrderRegistration
     {
         $this->error = new Exception(
-            $fields['errorMessage'] ?? '',
-            $fields['errorCode'] ?? 0
+            (string) ($fields['errorMessage'] ?? ''),
+            (int) ($fields['errorCode'] ?? 0)
         );
 
         return $this;
