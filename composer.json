@@ -1,6 +1,6 @@
 {
     "name": "jukuan/alfa-acquiring",
-    "description": "Internet Acquiring helper for AlfaBank (Belarus), non-official.",
+    "description": "Internet Acquiring helper for AlfaBank (tested in Belarus only for now), non-official.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -10,8 +10,13 @@
         }
     ],
     "keywords": [
+        "Belarus",
+        "Беларусь",
         "Alfa-Bank",
-        "internet acquiring"
+        "alfabank",
+        "acquiring",
+        "payment",
+        "credit card"
     ],
     "minimum-stability": "stable",
     "prefer-stable": true,
@@ -20,7 +25,8 @@
         "php": ">=7.4",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "psr/log": "^1.1"
     },
     "autoload": {
         "psr-4": {
