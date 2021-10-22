@@ -18,9 +18,18 @@ class BaseRequest
         $this->fields = $fields ?? $_REQUEST;
     }
 
-    protected function getInputName(string $key): string
+    protected function getInputName(string $key, ?string $default = null): string
     {
-        return $this->inputNames[$key] ?? $key;
+        $default = $default ?: $key;
+
+        return $this->inputNames[$key] ?? $default;
+    }
+
+    protected function getInputValue(string $key, string $default = ''): string
+    {
+        $name = $this->getInputName($key);
+
+        return $this->fields[$name] ?? $default;
     }
 
     /**
@@ -36,5 +45,29 @@ class BaseRequest
         );
 
         return $this;
+    }
+
+    public function getDomainName(): string
+    {
+        return $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+    }
+
+    public function getScheme(): string
+    {
+        $proto = 'http';
+
+        if (isset($_SERVER['HTTPS'])) {
+            $https = strtolower($_SERVER['HTTPS']);
+
+            if ('on' === $https || 1 === (int) $https) {
+                $proto = 'https';
+            }
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
+        } elseif (isset($_SERVER['SERVER_PROTOCOL'])) {
+            $proto = strtolower($_SERVER['SERVER_PROTOCOL']);
+        }
+
+        return $proto;
     }
 }

@@ -38,7 +38,7 @@ class Order
 
     public function isValid(): bool
     {
-        return $this->amount > 0 && mb_strlen($this->orderNumber) > 0;
+        return $this->amount > 0 && strlen($this->returnUrl) > 0;
     }
 
     public function getOrderNumber(): string
@@ -46,15 +46,19 @@ class Order
         return $this->orderNumber;
     }
 
-    public function setUniqueOrder(): Order
+    public function generateUniqueOrderNumber(): Order
     {
         $this->orderNumber = uniqid();
 
         return $this;
     }
 
-    public function addOrderTimeSuffix(): Order
+    public function addOrderNumberTimeSuffix(): Order
     {
+        if (0 === mb_strlen($this->orderNumber)) {
+            $this->orderNumber = date('Y-m-d H:i');
+        }
+
         $this->orderNumber .= '_' . time();
 
         return $this;

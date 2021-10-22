@@ -19,6 +19,8 @@ class OrderRegisterFormHandler
 
     private ?OrderRegistration $response = null;
 
+    private ?string $returnUrl = null;
+
     public function __construct(RbsClient $rbsClient)
     {
         $this->rbsClient = $rbsClient;
@@ -45,9 +47,14 @@ class OrderRegisterFormHandler
         return $this->error->getMessage();
     }
 
-    private function isPostRequest(): bool
+    public function isPostRequest(): bool
     {
         return 'POST' === strtoupper(($_SERVER['REQUEST_METHOD'] ?? ''));
+    }
+
+    private function generateReturnUrl(OrderRegisterRequest $request): string
+    {
+        return sprintf('%s://%s', $request->getScheme(), $request->getDomainName());
     }
 
     private function processRequest(OrderRegisterRequest $request): bool
@@ -57,6 +64,7 @@ class OrderRegisterFormHandler
         $phone = $request->getPhone();
 
         $order = Order::forCustomer($amount, $email, $phone);
+        $order->setReturnUrl($this->returnUrl ?? $this->generateReturnUrl($request));
 
         if (!$order->isValid()) {
             // TODO:
@@ -103,5 +111,25 @@ class OrderRegisterFormHandler
 
         header('Location: ' . $url);
         die();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReturnUrl(): ?string
+    {
+        return $this->returnUrl;
+    }
+
+    /**
+     * @param string|null $returnUrl
+     *
+     * @return OrderRegisterFormHandler
+     */
+    public function setReturnUrl(?string $returnUrl): OrderRegisterFormHandler
+    {
+        $this->returnUrl = $returnUrl;
+
+        return $this;
     }
 }

@@ -5,10 +5,9 @@ use AlfaAcquiring\RequestHandler\OrderRegisterFormHandler;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$formHandler = new OrderRegisterFormHandler(
+$formHandler = (new OrderRegisterFormHandler(
     new RbsClient('demo-user', 'dummy-password')
-);
-//$formHandler->configureInputNames([//...]);
+))->setReturnUrl('https://google.by');
 
 if ($formHandler->processPostRequest()) {
     $orderId = $formHandler->getResponseOrderId();
@@ -18,4 +17,6 @@ if ($formHandler->processPostRequest()) {
     $formHandler->doRedirect(); // redirect to the payment gateway url
 }
 
-$formHandler->getErrorMessage(); // handle errors
+if ($formHandler->isPostRequest()) {
+    $formHandler->getErrorMessage(); // handle errors
+}

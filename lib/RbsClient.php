@@ -127,7 +127,6 @@ class RbsClient
             'orderNumber' => $order->getOrderNumber(),
             'amount' => $order->getAmount(),
             'returnUrl' => $order->getReturnUrl(),
-            'jsonParams' => json_encode(self::HTTP_HEADERS),
             'email' => $order->getEmail(),
             'phone' => $order->getPhone(),
             'currency' => $this->currency,
