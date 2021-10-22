@@ -49,7 +49,7 @@ class OrderRegisterFormHandler
 
     public function isPostRequest(): bool
     {
-        return 'POST' === strtoupper(($_SERVER['REQUEST_METHOD'] ?? ''));
+        return OrderRegisterRequest::isPost();
     }
 
     private function generateReturnUrl(OrderRegisterRequest $request): string
@@ -111,14 +111,6 @@ class OrderRegisterFormHandler
 
         header('Location: ' . $url);
         die();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReturnUrl(): ?string
-    {
-        return $this->returnUrl;
     }
 
     /**

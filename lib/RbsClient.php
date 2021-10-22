@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace AlfaAcquiring;
 
 use AlfaAcquiring\HttpClient\CurlClient;
-use AlfaAcquiring\Model\Customer;
 use AlfaAcquiring\Model\Order;
+use AlfaAcquiring\Response\BaseResponse;
 use AlfaAcquiring\Response\OrderRegistration;
+use AlfaAcquiring\Response\OrderStatus;
 
 class RbsClient
 {
@@ -76,7 +77,7 @@ class RbsClient
         $this->errorMessage = '';
     }
 
-    public function getError(): string
+    public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
@@ -107,13 +108,23 @@ class RbsClient
         return true;
     }
 
-    public function getOrderStatus(string $orderId): array
+    public function getResponseFields(): array
+    {
+        return (array) $this->client->getResponse();
+    }
+
+    public function getResponse(): BaseResponse
+    {
+        return new BaseResponse($this->getResponseFields());
+    }
+
+    public function getOrderStatus(string $orderId): OrderStatus
     {
         if (!$this->doMethod('getOrderStatusExtended.do', ['orderId' => $orderId])) {
-            return [];
+            return OrderStatus::initialiseFailed($this->errorMessage);
         }
 
-        return (array) $this->client->getResponse();
+        return new OrderStatus((array) $this->client->getResponse());
     }
 
     private function getOrderRegisterMethod(): string
@@ -141,5 +152,12 @@ class RbsClient
         }
 
         return new OrderRegistration((array) $this->client->getResponse());
+    }
+
+    public function enableTestMode(): RbsClient
+    {
+        $this->isTestMode = true;
+
+        return $this;
     }
 }

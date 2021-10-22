@@ -18,6 +18,11 @@ class BaseRequest
         $this->fields = $fields ?? $_REQUEST;
     }
 
+    public static function isPost(): bool
+    {
+        return 'POST' === strtoupper($_SERVER['REQUEST_METHOD'] ?? '');
+    }
+
     protected function getInputName(string $key, ?string $default = null): string
     {
         $default = $default ?: $key;

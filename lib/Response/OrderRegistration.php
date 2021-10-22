@@ -4,17 +4,8 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\Response;
 
-use Exception;
-
-class OrderRegistration
+class OrderRegistration extends BaseResponse
 {
-    /**
-     * @var string[]
-     */
-    private array $fields;
-
-    private ?Exception $error = null;
-
     private string $orderId = '';
 
     private string $formUrl = '';
@@ -24,32 +15,18 @@ class OrderRegistration
      */
     public function __construct(array $fields)
     {
-        $this->fields = $fields;
+        parent::__construct($fields);
 
-        if (isset($fields['errorCode']) || isset($fields['errorMessage'])) {
-            $this->setErrorFields($fields);
-        } else {
-            $this->orderId = (string) ($fields['orderId'] ?? '');
-            $this->formUrl = (string) ($fields['formUrl'] ?? '');
-        }
+        $this->orderId = (string) ($fields['orderId'] ?? '');
+        $this->formUrl = (string) ($fields['formUrl'] ?? '');
     }
 
     public static function initialiseFailed(string $errorMsg): OrderRegistration
     {
-        return (new OrderRegistration([]))
+        return (new static([]))
             ->setErrorFields([
                 'errorMessage' => $errorMsg
             ]);
-    }
-
-    private function setErrorFields(array $fields): OrderRegistration
-    {
-        $this->error = new Exception(
-            (string) ($fields['errorMessage'] ?? ''),
-            (int) ($fields['errorCode'] ?? 0)
-        );
-
-        return $this;
     }
 
     public function hasError(): bool
@@ -80,16 +57,5 @@ class OrderRegistration
     public function isValid(): bool
     {
         return !$this->hasError() && $this->hasOrderId() && $this->hasFormUrl();
-    }
-
-    /**
-     * @deprecated
-     * TODO: check if we really need that
-     *
-     * @return string[]
-     */
-    public function getResponseFields(): array
-    {
-        return $this->fields;
     }
 }
