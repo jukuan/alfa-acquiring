@@ -9,21 +9,25 @@ use Throwable;
 
 trait LoggerTrait
 {
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
-    protected function setLogger(LoggerInterface $logger = null)
+    protected function setLogger(?LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
     protected function logInfo(string $message, array $context = [])
     {
-        $this->logger->info($message, $context);
+        if (null !== $this->logger) {
+            $this->logger->info($message, $context);
+        }
     }
 
     protected function logError(string $message, array $context = [])
     {
-        $this->logger->error($message, $context);
+        if (null !== $this->logger) {
+            $this->logger->error($message, $context);
+        }
     }
 
     protected function logException(Throwable $exception, array $context = [])
@@ -34,6 +38,8 @@ trait LoggerTrait
             $context['previousErrorCode'] = $exception->getPrevious()->getCode();
         }
 
-        $this->logger->error($exception->getMessage(), $context);
+        if (null !== $this->logger) {
+            $this->logger->error($exception->getMessage(), $context);
+        }
     }
 }

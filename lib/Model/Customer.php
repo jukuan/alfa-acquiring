@@ -19,15 +19,13 @@ class Customer
     }
 
     /**
-     * // TODO: implement that
-     *
      * @param string|null $value
      *
      * @return string|null
      */
     private static function prepareEmail(?string $value): ?string
     {
-        if (null === $value || '' === $value) {
+        if (null === $value || '' === $value || false === filter_var($value, FILTER_VALIDATE_EMAIL)) {
             return null;
         }
 
@@ -36,7 +34,7 @@ class Customer
 
     private static function preparePhone(?string $value): ?string
     {
-        if (null === $value || '' === $value) {
+        if (null === $value || '' === $value || strlen($value) < 7) {
             return null;
         }
 

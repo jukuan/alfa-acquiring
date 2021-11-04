@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\Model;
 
+use AlfaAcquiring\Logger\LoggerTrait;
+
 class Order
 {
+    use LoggerTrait;
+
     private string $orderNumber = '';
 
     private int $amount;
@@ -29,7 +33,7 @@ class Order
             if ($customer->isValid()) {
                 $order->setCustomer($customer);
             } else {
-                // TODO: log the error
+                $order->logError('Customer is not valid');
             }
         }
 

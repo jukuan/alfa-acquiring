@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlfaAcquiring\RequestHandler;
 
 use AlfaAcquiring\HttpRequest\OrderRegisterRequest;
+use AlfaAcquiring\Logger\LoggerTrait;
 use AlfaAcquiring\Model\Order;
 use AlfaAcquiring\RbsClient;
 use AlfaAcquiring\Response\OrderRegistration;
@@ -13,6 +14,8 @@ use Exception;
 
 class OrderRegisterFormHandler
 {
+    use LoggerTrait;
+
     private RbsClient $rbsClient;
 
     private ?Exception $error = null;
@@ -67,8 +70,8 @@ class OrderRegisterFormHandler
         $order->setReturnUrl($this->returnUrl ?? $this->generateReturnUrl($request));
 
         if (!$order->isValid()) {
-            // TODO:
             $this->error = new Exception('Order is invalid');
+            $this->logException($this->error);
 
             return false;
         }
