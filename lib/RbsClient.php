@@ -12,7 +12,7 @@ use AlfaAcquiring\Response\OrderStatus;
 
 class RbsClient
 {
-    private const LIB_VERSION = '1.0.1';
+    private const LIB_VERSION = '1.0.2';
     private const HTTP_HEADERS = [
         'CMS: AlfaAcquiring',
         'Module-Version: ' . self::LIB_VERSION
@@ -118,6 +118,13 @@ class RbsClient
         return new BaseResponse($this->getResponseFields());
     }
 
+    /**
+     * @deprecated
+     * Use OrderStatusMethod{} instead
+     *
+     * @param string $orderId
+     * @return OrderStatus
+     */
     public function getOrderStatus(string $orderId): OrderStatus
     {
         if (!$this->doMethod('getOrderStatusExtended.do', ['orderId' => $orderId])) {
@@ -127,11 +134,24 @@ class RbsClient
         return new OrderStatus((array) $this->client->getResponse());
     }
 
+    /**
+     * @deprecated
+     * Use RegisterOrderMethod{} instead
+     *
+     * @return string
+     */
     private function getOrderRegisterMethod(): string
     {
         return self::PAYMENT_STAGE_TWO == $this->paymentStage ? 'registerPreAuth.do' : 'register.do';
     }
 
+    /**
+     * @deprecated
+     * Use RegisterOrderMethod instead
+     *
+     * @param Order $order
+     * @return OrderRegistration
+     */
     public function registerOrder(Order $order): OrderRegistration
     {
         $fields = [
