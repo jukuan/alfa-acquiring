@@ -44,6 +44,11 @@ abstract class BaseApiMethod
         return $this;
     }
 
+    public function __invoke(): BaseResponse
+    {
+        return $this->run();
+    }
+
     abstract public function hasValidParams(): bool;
 
     abstract public function run(): BaseResponse;

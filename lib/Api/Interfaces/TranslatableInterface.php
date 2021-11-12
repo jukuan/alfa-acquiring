@@ -16,5 +16,10 @@ interface TranslatableInterface
     ];
     public const DEFAULT_LANGUAGE = self::LANGUAGE_RU;
 
+    /**
+     * The language code in ISO 639-1.
+     *
+     * @return string
+     */
     public function getLanguage(): string;
 }

@@ -7,9 +7,7 @@ namespace AlfaAcquiring\Api;
 use AlfaAcquiring\Api\Interfaces\PayableInterface;
 use AlfaAcquiring\Api\Interfaces\TranslatableInterface;
 use AlfaAcquiring\Model\Order;
-use AlfaAcquiring\Response\BaseResponse;
 use AlfaAcquiring\Response\OrderRegistration;
-use DomainException;
 
 class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, TranslatableInterface
 {
@@ -19,7 +17,7 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
     private string $paymentStage = self::PAYMENT_STAGE_ONE;
     private string $language = self::DEFAULT_LANGUAGE;
     private int $currency = self::BYN_CURRENCY;
-    private ?Order $order;
+    private ?Order $order = null;
 
     private function getMethodName(): string
     {
@@ -52,32 +50,25 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
         return null !== $this->order;
     }
 
-    public function run(): BaseResponse
+    private function getParamFields(): array
     {
-        if (!$this->hasValidParams()) {
-            throw new DomainException('Order is not set');
+        $fields = [];
+
+        if (null !== $this->order) {
+            $fields = [
+                'orderNumber' => $this->order->getOrderNumber(),
+                'amount' => $this->order->getAmount(),
+                'returnUrl' => $this->order->getReturnUrl(),
+                'email' => $this->order->getEmail(),
+                'phone' => $this->order->getPhone(),
+            ];
         }
 
-        $fields = [
-            'orderNumber' => $this->order->getOrderNumber(),
-            'amount' => $this->order->getAmount(),
-            'returnUrl' => $this->order->getReturnUrl(),
-            'email' => $this->order->getEmail(),
-            'phone' => $this->order->getPhone(),
-            'currency' => $this->getCurrency(),
-        ];
+        $fields['currency'] = $this->getCurrency();
 
-        $fields = array_filter($fields, static function ($value) {
+        return array_filter($fields, static function ($value) {
             return 0 !== $value && null !== $value && '' !== $value;
         });
-
-        $result = $this->client->doMethod($this->getMethodName(), $fields);
-
-        if (false === $result) {
-            return OrderRegistration::initialiseFailed($this->client->getErrorMessage());
-        }
-
-        return new OrderRegistration((array) $this->client->getResponse());
     }
 
     public function getCurrency(): int
@@ -88,5 +79,31 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
     public function getLanguage(): string
     {
         return $this->language;
+    }
+
+    public function run(): OrderRegistration
+    {
+        $error = null;
+
+        if ($this->hasValidParams()) {
+            $result = $this->client->doMethod(
+                $this->getMethodName(),
+                $this->getParamFields()
+            );
+
+            if (!$result) {
+                $error = $this->client->getErrorMessage();
+            }
+        } else {
+            $error = 'Order object is not set';
+        }
+
+        if (null !== $error) {
+            return OrderRegistration::initialiseFailed($error);
+        }
+
+        return new OrderRegistration(
+            (array) $this->client->getResponse()
+        );
     }
 }

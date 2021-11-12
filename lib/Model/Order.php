@@ -57,12 +57,15 @@ class Order
         return $this;
     }
 
+    public function generateOrderNumberAsDate(): Order
+    {
+        $this->orderNumber = date('Y-m-d H:i:s');
+
+        return $this;
+    }
+
     public function addOrderNumberTimeSuffix(): Order
     {
-        if (0 === mb_strlen($this->orderNumber)) {
-            $this->orderNumber = date('Y-m-d H:i');
-        }
-
         $this->orderNumber .= '_' . time();
 
         return $this;

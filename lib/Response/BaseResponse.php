@@ -82,4 +82,14 @@ class BaseResponse implements ResponseInterface
     {
         return null === $this->error;
     }
+
+    public function getField(string $fieldName): ?string
+    {
+        return $this->fields[$fieldName] ?? null;
+    }
+
+    public function getAllFields(): array
+    {
+        return $this->fields;
+    }
 }

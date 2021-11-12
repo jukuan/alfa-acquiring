@@ -25,16 +25,24 @@ class OrderStatusMethod extends BaseApiMethod
 
     public function run(): OrderStatus
     {
-        if (!$this->hasValidParams()) {
-            return OrderStatus::initialiseFailed($this->client->getErrorMessage());
+        $error = null;
+
+        if ($this->hasValidParams()) {
+            $result = $this->client->doMethod(self::METHOD, $this->params);
+
+            if (!$result) {
+                $error = $this->client->getErrorMessage();
+            }
+        } else {
+            $error = 'Order id is not set';
         }
 
-        $result = $this->client->doMethod(self::METHOD, $this->params);
-
-        if (false === $result) {
-            return OrderStatus::initialiseFailed($this->client->getErrorMessage());
+        if (null !== $error) {
+            return OrderStatus::initialiseFailed($error);
         }
 
-        return new OrderStatus((array) $this->client->getResponse());
+        return new OrderStatus(
+            (array) $this->client->getResponse()
+        );
     }
 }

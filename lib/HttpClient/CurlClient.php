@@ -28,8 +28,7 @@ class CurlClient
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING, 'gzip',
-            CURLOPT_ENCODING, '',
+            CURLOPT_ENCODING => '',
         ];
 
         if ($this->timeout > 0) {

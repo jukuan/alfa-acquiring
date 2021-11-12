@@ -5,19 +5,21 @@ use AlfaAcquiring\RbsClient;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$orderIdExample = '570116f7-2588-768a-93a4-8b300007a120';
-
 $apiClient = (new RbsClient('test-api', 'test'))
     ->enableTestMode(); // for debug only
 
+$orderIdExample = '570116f7-2588-768a-93a4-8b300007a120';
+
 // the old way
-$orderStatusResponse = $apiClient->getOrderStatus($orderIdExample);
+//$response = $apiClient->getOrderStatus($orderIdExample);
 
 // the new way
-$response = (new OrderStatusMethod($apiClient))->setOrderId($orderIdExample)->run();
+$response = (new OrderStatusMethod($apiClient))
+    ->setOrderId($orderIdExample)
+    ->run();
 
 print '<pre>';
-var_dump($orderStatusResponse->getOrderNumber());
-var_dump($orderStatusResponse->getOrderStatus());
-var_dump($orderStatusResponse);
+var_dump($response->getOrderNumber());
+var_dump($response->getOrderStatus());
+var_dump($response);
 print '</pre>';

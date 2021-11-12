@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\RequestHandler;
 
+use AlfaAcquiring\Api\RegisterOrderMethod;
 use AlfaAcquiring\HttpRequest\OrderRegisterRequest;
 use AlfaAcquiring\Logger\LoggerTrait;
 use AlfaAcquiring\Model\Order;
@@ -76,7 +77,9 @@ class OrderRegisterFormHandler
             return false;
         }
 
-        $this->response = $this->rbsClient->registerOrder($order);
+        $this->response = (new RegisterOrderMethod($this->rbsClient))
+            ->setOrder($order)
+            ->run();
 
         return $this->hasValidResponse();
     }
