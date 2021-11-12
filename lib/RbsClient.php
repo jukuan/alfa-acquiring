@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlfaAcquiring;
 
 use AlfaAcquiring\HttpClient\CurlClient;
+use AlfaAcquiring\HttpClient\HttpRequestInterface;
 use AlfaAcquiring\Model\Order;
 use AlfaAcquiring\Response\BaseResponse;
 use AlfaAcquiring\Response\OrderRegistration;
@@ -44,16 +45,24 @@ class RbsClient
     private string $paymentStage = self::PAYMENT_STAGE_ONE;
     private string $language = self::DEFAULT_LANGUAGE;
     private int $currency = self::BYN_CURRENCY;
-    private CurlClient $client;
+    private HttpRequestInterface $client;
     private string $errorMessage = '';
     private string $login;
     private string $password;
 
-    public function __construct(string $login, string $password)
-    {
+    public function __construct(
+        string $login,
+        string $password,
+        ?HttpRequestInterface $client = null
+    ) {
         $this->login = $login;
         $this->password = $password;
-        $this->client = (new CurlClient())->setHttpHeaders(self::HTTP_HEADERS);
+
+        if (null === $client) {
+            $client = new CurlClient();
+        }
+
+        $this->client = $client->setHttpHeaders(self::HTTP_HEADERS);
     }
 
     public function setLanguage(string $lang): RbsClient
@@ -110,12 +119,12 @@ class RbsClient
 
     public function getResponseFields(): array
     {
-        return (array) $this->client->getResponse();
+        return (array) $this->client->getDecodedResponse();
     }
 
     public function getResponse(): BaseResponse
     {
-        return new BaseResponse($this->getResponseFields());
+        return (new BaseResponse($this->getResponseFields()));
     }
 
     /**
@@ -131,7 +140,7 @@ class RbsClient
             return OrderStatus::initialiseFailed($this->errorMessage);
         }
 
-        return new OrderStatus((array) $this->client->getResponse());
+        return new OrderStatus((array) $this->client->getDecodedResponse());
     }
 
     /**
@@ -171,7 +180,7 @@ class RbsClient
             return OrderRegistration::initialiseFailed($this->errorMessage);
         }
 
-        return new OrderRegistration((array) $this->client->getResponse());
+        return new OrderRegistration((array) $this->client->getDecodedResponse());
     }
 
     public function enableTestMode(): RbsClient

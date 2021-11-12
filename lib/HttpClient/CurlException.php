@@ -5,9 +5,19 @@ declare(strict_types=1);
 namespace AlfaAcquiring\HttpClient;
 
 use Exception;
+use Throwable;
 
 class CurlException extends Exception
 {
+    public static function create(Throwable $throwable): CurlException
+    {
+        return new self(
+            $throwable->getMessage(),
+            $throwable->getCode(),
+            $throwable
+        );
+    }
+
     /**
      * @param string $message
      * @param resource|null $curlHandle

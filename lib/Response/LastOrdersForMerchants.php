@@ -6,5 +6,4 @@ namespace AlfaAcquiring\Response;
 
 class LastOrdersForMerchants extends BaseResponse
 {
-
 }

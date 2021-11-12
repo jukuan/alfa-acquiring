@@ -41,6 +41,7 @@
         }
     },
     "require-dev": {
-        "vimeo/psalm": "^4.10"
+        "vimeo/psalm": "^4.12",
+        "phpunit/phpunit": "^9.5"
     }
 }

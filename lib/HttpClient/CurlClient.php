@@ -4,16 +4,24 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\HttpClient;
 
-class CurlClient
+use Exception;
+use JsonException;
+
+class CurlClient implements HttpRequestInterface
 {
     private int $timeout = 0;
 
     private ?CurlException $exception = null;
 
     /**
+     * @param null|resource
+     */
+    private $ch = null;
+
+    /**
      * @var mixed
      */
-    private $response = null;
+    private $decodedResponse = null;
 
     /**
      * @var string[]
@@ -50,33 +58,33 @@ class CurlClient
     private function decodeResponse(?string $response): void
     {
         if (null !== $response && '' !== $response) {
-            $this->response = json_decode($response, true) ?: null;
+            try {
+                $this->decodedResponse = json_decode($response, true) ?: null;
+            } catch (Exception $exception) {
+                $this->exception = CurlException::create($exception);
+            }
         }
     }
 
     public function execute(string $url, array $postFields = []): CurlClient
     {
-        $handle = curl_init();
-
-        if (false === $handle) {
-            $this->setError('Cannot initialise curl');
-        }
+        $this->initialise();
 
         $options = $this->buildCurlOptions($url, $postFields);
 
-        if (!curl_setopt_array($handle, $options)) {
-            $this->setError('Cannot set curl options', $handle);
+        if (!curl_setopt_array($this->ch, $options)) {
+            $this->setError('Cannot set curl options', $this->ch);
         }
 
-        $response = curl_exec($handle) ?: null;
+        $response = $this->getHttpResponse();
 
         if (is_string($response)) {
             $this->decodeResponse($response);
         } else {
-            $this->setError('Bad response', $handle);
+            $this->setError('Bad response', $this->ch);
         }
 
-        curl_close($handle);
+        $this->close();
 
         return $this;
     }
@@ -98,16 +106,21 @@ class CurlClient
         return $this->exception->getMessage();
     }
 
+    public function getHttpResponse(): ?string
+    {
+        return curl_exec($this->ch) ?: null;
+    }
+
     /**
      * @return mixed
      */
-    public function getResponse()
+    public function getDecodedResponse()
     {
         if ($this->hasError()) {
             return null;
         }
 
-        return $this->response;
+        return $this->decodedResponse;
     }
 
     public function setTimeout(int $timeout): CurlClient
@@ -119,6 +132,7 @@ class CurlClient
 
     /**
      * @param string $msg
+     *
      * @param resource $handle
      */
     private function setError(string $msg, $handle = null): void
@@ -150,5 +164,33 @@ class CurlClient
         $this->httpHeaders = $httpHeaders;
 
         return $this;
+    }
+
+    public function setOption(int $name, $value): void
+    {
+        curl_setopt($this->ch, $name, $value);
+    }
+
+    public function getInfo(?int $name)
+    {
+        return curl_getinfo($this->ch, $name);
+    }
+
+    public function initialise(): void
+    {
+        $handle = curl_init();
+
+        if (false === $handle) {
+            $this->setError('Cannot initialise curl');
+        } else {
+            $this->ch = $handle;
+        }
+    }
+
+    public function close(): void
+    {
+        if (null !== $this->ch) {
+            curl_close($this->ch);
+        }
     }
 }
