@@ -12,10 +12,6 @@ class RbsClientTest extends TestCase
 {
     public function testErrorMessages()
     {
-        // Create a stub for the SomeClass class.
-        $http = $this->createStub(HttpRequestInterface::class);
-//        $http = $this->createStub(RbsClient::class);
-
         $http = $this->createMock(HttpRequestInterface::class);
 
         $http->expects($this->any())->method('hasError')->willReturn(true);

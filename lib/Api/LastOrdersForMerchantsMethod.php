@@ -89,7 +89,9 @@ class LastOrdersForMerchantsMethod extends BaseApiMethod
      */
     public function setFrom(?DateTimeInterface $from): LastOrdersForMerchantsMethod
     {
-        $this->from = $from;
+        if (null !== $from) {
+            $this->from = clone $from;
+        }
 
         return $this;
     }
@@ -101,7 +103,9 @@ class LastOrdersForMerchantsMethod extends BaseApiMethod
      */
     public function setTo(?DateTimeInterface $to): LastOrdersForMerchantsMethod
     {
-        $this->to = $to;
+        if (null !== $to) {
+            $this->to = clone $to;
+        }
 
         return $this;
     }
@@ -122,25 +126,16 @@ class LastOrdersForMerchantsMethod extends BaseApiMethod
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPage(): int
     {
         return $this->page;
     }
 
-    /**
-     * @return int
-     */
     private function getSize(): int
     {
         return $this->size > 0 ? $this->size : self::MAX_SIZE;
     }
 
-    /**
-     * @return DateTimeInterface
-     */
     private function getFrom(): DateTimeInterface
     {
         if ($this->from === null) {

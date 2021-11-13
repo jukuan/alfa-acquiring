@@ -13,10 +13,10 @@ class StringHelperTest extends TestCase
     /**
      * @dataProvider phoneNumbersProvider
      *
-     * @param $expected
-     * @param $original
+     * @param string|null $expected
+     * @param string|null $original
      */
-    public function testPhoneNumbersPreparation($expected, $original)
+    public function testPhoneNumbersPreparation(?string $expected, ?string $original)
     {
         $actual = StringHelper::preparePhone($original);
 
@@ -26,10 +26,10 @@ class StringHelperTest extends TestCase
     /**
      * @dataProvider emailsProvider
      *
-     * @param $expected
-     * @param $original
+     * @param string|null $expected
+     * @param string|null $original
      */
-    public function tesEmailsPreparation($expected, $original)
+    public function tesEmailsPreparation(?string $expected, ?string $original)
     {
         $actual = StringHelper::preparePhone($original);
 
@@ -38,6 +38,10 @@ class StringHelperTest extends TestCase
 
     public function phoneNumbersProvider(): Generator
     {
+        yield [null, null];
+        yield [null, ''];
+        yield [null, ' '];
+
         yield ['+375292186303', ' +375 (29) 218-63-03 '];
         yield ['+375291918253', '+375 (29) 1918 25 3'];
         yield ['+375331234567', '+375 (33) 1234567'];
@@ -53,6 +57,10 @@ class StringHelperTest extends TestCase
 
     public function emailsProvider(): Generator
     {
+        yield [null, null];
+        yield [null, ''];
+        yield [null, ' '];
+
         yield ['Kastus@Kalinouski.by', ' Kastus@Kalinouski.by'];
         yield [null, 'Kastus @Kalinouski.by'];
         yield [null, '.by'];

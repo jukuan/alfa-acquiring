@@ -37,11 +37,6 @@ class BaseRequest
         return $this->fields[$name] ?? $default;
     }
 
-    /**
-     * @param string[] $fields
-     *
-     * @return $this
-     */
     public function configureInputNames(array $fields): BaseRequest
     {
         $this->inputNames = array_merge(

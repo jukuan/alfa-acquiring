@@ -1,11 +1,18 @@
 # AlfaAcquiring
 The simple Internet Acquiring helper for Alfa-Bank (Belarus), non-official.
 
+Contributors needed!
+
 (English version below)
 
 ### [be_BY] Пра бібліятэку 
 
-Простая бібліятэка-дапаможнік для выкарыстання інтэрнэт-эквайрынгу (онлайн аплата на сайце) праз плацёжный шлюз Альфа-Банку (Беларусь), неафіційная. 
+Простая бібліятэка-дапаможнік для выкарыстання інтэрнэт-эквайрынгу (онлайн аплата на сайце) 
+праз плацёжный шлюз Альфа-Банку (Беларусь), неафіційная.
+Часткова пакрыта базавымі тэстамі. Мае быць стабільнай і гнуткай для пашырэння.
+Асноўная мэта: працаваць са зручнымі аб'ектамі (Request and Response) і мець лагіраванне памылак і іх адлюстраванне.
+Як вынік гэта мусіць гарантаваць больш стабільную і зручную працу для сайтаў, якія ажыццяўляюць плацяжы 
+з дапамогай дадзенай бібліятэкі.
 
 Праверана на беларускіх сайтах і плацёжных шлюзах.
 Тэарытычна павінна працаваць аналагічным чынам і ў іншых краінах, дзе існуе Альфа-Банк.
@@ -31,11 +38,15 @@ you can find in the 'example' directory, there are few simple php files.
 
 The aim is to create the Client for API connection (RbsClient) and 
 use that for specific methods operations.
+The mission of that library is to provide comfortable objects (Request and Response) 
+to work with the payment gateway with error logging (if it's needed).
+All classes might be easily extended for your aims.
 
 At the moment the library is far from final version.
-But it does work fine and better then the PHP code sample from bank's vendor (see code for WordPress and compare it)
+But it does work fine and better then the PHP code sample from bank's vendor (see code for WordPress and compare it).
 Any fork/update/comment from you might be helpful. Thanks.
 
+And an example of usage is below. See more in 'example' directory.
 ```
 $apiClient = (new RbsClient('test-api', 'test'));
 

@@ -31,7 +31,7 @@ class StringHelper
 
         if ('+' === $number[0]) {
             $withoutCode = substr($number, 1);
-        } else if (0 === strpos($number, '80')) {
+        } elseif (0 === strpos($number, '80')) {
             $withoutCode = substr($number, 1);
         } else {
             $withoutCode = $number;

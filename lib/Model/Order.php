@@ -91,10 +91,6 @@ class Order
         return $this->amount;
     }
 
-    /**
-     * @param int $amount
-     * @return Order
-     */
     public function setAmount(int $amount): Order
     {
         $this->amount = $amount;
@@ -102,19 +98,11 @@ class Order
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getReturnUrl(): string
     {
         return $this->returnUrl;
     }
 
-    /**
-     * @param string $returnUrl
-     *
-     * @return Order
-     */
     public function setReturnUrl(string $returnUrl): Order
     {
         $this->returnUrl = $returnUrl;

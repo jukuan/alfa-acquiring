@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AlfaAcquiring\HttpClient;
 
 use Exception;
-use JsonException;
 
 class CurlClient implements HttpRequestInterface
 {

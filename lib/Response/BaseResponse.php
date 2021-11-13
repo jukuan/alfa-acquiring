@@ -67,17 +67,6 @@ class BaseResponse implements ResponseInterface
         return $this->error->getMessage();
     }
 
-    /**
-     * @deprecated
-     * TODO: check if we really need that
-     *
-     * @return string[]
-     */
-    protected function getResponseFields(): array
-    {
-        return $this->fields;
-    }
-
     public function isValid(): bool
     {
         return null === $this->error;

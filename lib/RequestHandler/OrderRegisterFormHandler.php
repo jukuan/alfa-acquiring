@@ -119,11 +119,6 @@ class OrderRegisterFormHandler
         die();
     }
 
-    /**
-     * @param string|null $returnUrl
-     *
-     * @return OrderRegisterFormHandler
-     */
     public function setReturnUrl(?string $returnUrl): OrderRegisterFormHandler
     {
         $this->returnUrl = $returnUrl;
