@@ -38,9 +38,9 @@ class StringHelperTest extends TestCase
 
     public function phoneNumbersProvider(): Generator
     {
-        yield [null, null];
-        yield [null, ''];
-        yield [null, ' '];
+        yield ['', null];
+        yield ['', ''];
+        yield ['', ' '];
 
         yield ['+375292186303', ' +375 (29) 218-63-03 '];
         yield ['+375291918253', '+375 (29) 1918 25 3'];
@@ -49,28 +49,28 @@ class StringHelperTest extends TestCase
         yield ['375257654321', '375 25 765 43 21'];
         yield ['257654321', '25 765 43 21'];
         yield ['+375251234567', '+375251234567'];
-        yield [null, '37525123'];
-        yield [null, '+37525123'];
+        yield ['', '37525123'];
+        yield ['', '+37525123'];
         yield ['+79039030303', '+7 (903) 903-03-03'];
-        yield [null, '+7 (903) 903-0'];
+        yield ['', '+7 (903) 903-0'];
     }
 
     public function emailsProvider(): Generator
     {
-        yield [null, null];
-        yield [null, ''];
-        yield [null, ' '];
+        yield ['', null];
+        yield ['', ''];
+        yield ['', ' '];
 
         yield ['Kastus@Kalinouski.by', ' Kastus@Kalinouski.by'];
-        yield [null, 'Kastus @Kalinouski.by'];
-        yield [null, '.by'];
+        yield ['', 'Kastus @Kalinouski.by'];
+        yield ['', '.by'];
 
         yield ['Taras@Shevchenko.ua', 'Taras@Shevchenko.ua '];
-        yield [null, 'Taras Shevchenko'];
+        yield ['', 'Taras Shevchenko'];
         yield [null, 'Taras@Shevchenko'];
 
         yield ['Mikhail@Glinka.ru', ' Mikhail@Glinka.ru '];
-        yield [null, 'Mikhail'];
-        yield [null, '@Glinka.ru'];
+        yield ['', 'Mikhail'];
+        yield ['', '@Glinka.ru'];
     }
 }
