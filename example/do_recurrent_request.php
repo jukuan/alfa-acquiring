@@ -1,6 +1,6 @@
 <?php
 
-use AlfaAcquiring\Api\LastOrdersForMerchantsMethod;
+use AlfaAcquiring\Api\RecurrentPaymentRequest;
 use AlfaAcquiring\RbsClient;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -8,14 +8,14 @@ require __DIR__ . '/../vendor/autoload.php';
 $apiClient = (new RbsClient('test-api', 'test'))
     ->enableTestMode(); // for debug only
 
-$response = (new LastOrdersForMerchantsMethod($apiClient))
-    ->setFrom(new \DateTime('-1 day'))
+$response = (new RecurrentPaymentRequest($apiClient))
     ->run();
 
 print '<pre>';
 var_dump('Query:', $apiClient->getLastQuery());
 var_dump('HttpResponseCode:', $apiClient->getHttpResponseCode());
 
-var_dump($response->getErrorMessage());
-var_dump($response->getAllFields());
+var_dump($response);
+var_dump($apiClient->getLastQuery());
+var_dump($apiClient->getHttpResponseCode());
 print '</pre>';

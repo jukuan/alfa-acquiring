@@ -44,6 +44,13 @@ abstract class BaseApiMethod
         return $this;
     }
 
+    public function reset(): BaseApiMethod
+    {
+        $this->params = [];
+
+        return $this;
+    }
+
     public function __invoke(): BaseResponse
     {
         return $this->run();

@@ -19,7 +19,11 @@ $response = (new OrderStatusMethod($apiClient))
     ->run();
 
 print '<pre>';
-var_dump($response->getOrderNumber());
-var_dump($response->getOrderStatus());
+var_dump('Query:', $apiClient->getLastQuery());
+var_dump('HttpResponseCode:', $apiClient->getHttpResponseCode());
+
+var_dump('OrderNumber', $response->getOrderNumber());
+var_dump('OrderStatus', $response->getOrderStatus());
+
 var_dump($response);
 print '</pre>';

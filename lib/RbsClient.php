@@ -112,7 +112,12 @@ class RbsClient
         return $url . $method;
     }
 
-    public function doMethod(string $method, array $params = []): bool
+    private function prepareRequestUrl(string $method): string
+    {
+        return str_replace('/rest/', '/', $this->prepareMethodUrl($method));
+    }
+
+    public function doMethod(string $method, array $params = [], bool $isRest = true): bool
     {
         $this->reset();
 
@@ -123,7 +128,9 @@ class RbsClient
             $params['language'] = strlen($this->language) > 0 ? $this->language : self::DEFAULT_LANGUAGE;
         }
 
-        $this->client->execute($this->prepareMethodUrl($method), $params);
+        $url = $isRest ? $this->prepareMethodUrl($method) : $this->prepareRequestUrl($method);
+
+        $this->client->execute($url, $params);
 
         if ($this->client->hasError()) {
             $this->errorMessage = $this->client->getErrorDetails();
@@ -132,6 +139,16 @@ class RbsClient
         }
 
         return true;
+    }
+
+    public function doRequest(string $method, array $params = []): bool
+    {
+        return $this->doMethod($method, $params, false);
+    }
+
+    public function doRest(string $method, array $params = []): bool
+    {
+        return $this->doMethod($method, $params, true);
     }
 
     public function getResponseFields(): array

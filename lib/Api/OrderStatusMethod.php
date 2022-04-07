@@ -8,7 +8,7 @@ use AlfaAcquiring\Response\OrderStatus;
 
 class OrderStatusMethod extends BaseApiMethod
 {
-    private const METHOD = 'getOrderStatusExtended';
+    private const METHOD = 'getOrderStatusExtended.do';
     private const ORDER_FIELD = 'orderId';
 
     public function setOrderId(string $orderId): self

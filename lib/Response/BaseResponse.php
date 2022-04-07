@@ -11,7 +11,7 @@ class BaseResponse implements ResponseInterface
     /**
      * @var string[]
      */
-    protected array $fields;
+    protected array $fields = [];
 
     protected ?Exception $error = null;
 
