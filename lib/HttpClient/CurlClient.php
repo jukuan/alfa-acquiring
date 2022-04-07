@@ -27,8 +27,14 @@ class CurlClient implements HttpRequestInterface
      */
     private array $httpHeaders = [];
 
+    private string $lastQuery = '';
+
+    private int $httpCode = 0;
+
     private function buildCurlOptions(string $url, array $postFields = []): array
     {
+        $this->lastQuery = $url;
+
         $options = [
             CURLOPT_VERBOSE => true,
             CURLOPT_SSL_VERIFYHOST => false,
@@ -45,6 +51,9 @@ class CurlClient implements HttpRequestInterface
         if (count($postFields) > 0) {
             $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] = http_build_query($postFields, '', '&');
+
+            $separator = strpos($url, '?') === false ? '?' : '&';
+            $this->lastQuery .= $separator . $options[CURLOPT_POSTFIELDS];
         }
 
         if (count($this->httpHeaders) > 0) {
@@ -76,8 +85,9 @@ class CurlClient implements HttpRequestInterface
         }
 
         $response = $this->getHttpResponse();
+        $this->httpCode = $this->getCurlHttpCode();
 
-        if (is_string($response)) {
+        if (is_string($response) && self::isSuccessHttpStatusCode($this->httpCode)) {
             $this->decodeResponse($response);
         } else {
             $this->setError('Bad response', $this->ch);
@@ -108,6 +118,16 @@ class CurlClient implements HttpRequestInterface
     public function getHttpResponse(): ?string
     {
         return curl_exec($this->ch) ?: null;
+    }
+
+    private function getCurlHttpCode(): int
+    {
+        return curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+    }
+
+    public static function isSuccessHttpStatusCode(int $httpStatusCode): bool
+    {
+        return $httpStatusCode >= 200 && $httpStatusCode < 300;
     }
 
     /**
@@ -175,8 +195,18 @@ class CurlClient implements HttpRequestInterface
         return curl_getinfo($this->ch, $name);
     }
 
+    public function reset(): void
+    {
+        $this->lastQuery = '';
+        $this->httpCode = 0;
+        $this->decodedResponse = null;
+        $this->exception = null;
+    }
+
     public function initialise(): void
     {
+        $this->reset();
+
         $handle = curl_init();
 
         if (false === $handle) {
@@ -191,5 +221,15 @@ class CurlClient implements HttpRequestInterface
         if (null !== $this->ch) {
             curl_close($this->ch);
         }
+    }
+
+    public function getLastQuery(): string
+    {
+        return $this->lastQuery;
+    }
+
+    public function getHttpResponseCode(): int
+    {
+        return $this->httpCode;
     }
 }

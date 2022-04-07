@@ -22,9 +22,23 @@ class RbsClient
     private const ENDPOINT_PROD = 'https://ecom.alfabank.by/payment/rest/';
     private const ENDPOINT_TEST = 'https://web.rbsuat.com/ab_by/rest/';
 
-    private const BYN_CURRENCY = 933;
+    public const BYN_CURRENCY = 933;
+    public const EUR_CURRENCY = 978;
+    public const USD_CURRENCY = 840;
+    public const RUR_CURRENCY = 643;
 
-    private const LANGUAGE_BE = 'by';
+    public const CURRENCIES = [
+        'BYN' => self::BYN_CURRENCY,
+        'EUR' => self::EUR_CURRENCY,
+        'USD' => self::USD_CURRENCY,
+        'RUR' => self::RUR_CURRENCY
+    ];
+
+    /**
+     * Language codes in "ISO 639-1" format.
+     * https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+     */
+    private const LANGUAGE_BE = 'be';
     private const LANGUAGE_EN = 'en';
     private const LANGUAGE_RU = 'ru';
     private const LANGUAGES = [
@@ -104,7 +118,10 @@ class RbsClient
 
         $params['userName'] = $this->login;
         $params['password'] = $this->password;
-        $params['language'] = strlen($this->language) > 0 ? $this->language : self::DEFAULT_LANGUAGE;
+
+        if (!isset($params['language'])) {
+            $params['language'] = strlen($this->language) > 0 ? $this->language : self::DEFAULT_LANGUAGE;
+        }
 
         $this->client->execute($this->prepareMethodUrl($method), $params);
 
@@ -188,5 +205,15 @@ class RbsClient
         $this->isTestMode = true;
 
         return $this;
+    }
+
+    public function getLastQuery(): string
+    {
+        return $this->client->getLastQuery();
+    }
+
+    public function getHttpResponseCode(): int
+    {
+        return $this->client->getHttpResponseCode();
     }
 }
