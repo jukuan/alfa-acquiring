@@ -5,8 +5,11 @@ use AlfaAcquiring\RbsClient;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$apiClient = (new RbsClient('test-api', 'test'))
-    ->enableTestMode(); // for debug only
+/** @var RbsClient $rbsClient */
+$rbsClient = require '_rbs_client.php';
+$apiClient = $rbsClient
+    ->enableTestMode() // for debug only
+;
 
 $response = (new RecurrentPaymentRequest($apiClient))
     ->run();

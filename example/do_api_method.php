@@ -4,8 +4,11 @@ use AlfaAcquiring\RbsClient;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$apiClient = new RbsClient('test-api', 'test');
-$apiClient->enableTestMode(); // for debug only
+/** @var RbsClient $rbsClient */
+$rbsClient = require '_rbs_client.php';
+$apiClient = $rbsClient
+    ->enableTestMode() // for debug only
+;
 
 // execute custom API method
 $result = $apiClient->doMethod('', $params = []);

@@ -81,4 +81,26 @@ class BaseResponse implements ResponseInterface
     {
         return $this->fields;
     }
+
+    protected function getInnerFields(): array
+    {
+        foreach ($this->fields as $key => $list) {
+            if (false !== strpos($key, 'fields') && is_array($list)) {
+                return $list ?? [];
+            }
+        }
+
+        return [];
+    }
+
+    protected function getErrorFields(): array
+    {
+        foreach ($this->fields as $key => $list) {
+            if (false !== strpos($key, 'error') && is_array($list)) {
+                return $list ?? [];
+            }
+        }
+
+        return [];
+    }
 }

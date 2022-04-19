@@ -52,21 +52,19 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
 
     private function getParamFields(): array
     {
-        $fields = [];
-
         if (null !== $this->order) {
-            $fields = [
+            $this->params = array_merge([
                 'orderNumber' => $this->order->getOrderNumber(),
                 'amount' => $this->order->getAmount(),
                 'returnUrl' => $this->order->getReturnUrl(),
                 'email' => $this->order->getEmail(),
                 'phone' => $this->order->getPhone(),
-            ];
+            ], $this->params);
         }
 
-        $fields['currency'] = $this->getCurrency();
+        $this->params['currency'] = $this->getCurrency();
 
-        return array_filter($fields, static function ($value) {
+        return array_filter($this->params, static function ($value) {
             return 0 !== $value && null !== $value && '' !== $value;
         });
     }
@@ -81,6 +79,13 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
         return $this->language;
     }
 
+    public function setClientId(string $clientId): self
+    {
+        $this->params['clientId'] = $clientId;
+
+        return $this;
+    }
+
     public function run(): OrderRegistration
     {
         $error = null;
@@ -90,6 +95,7 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
                 $this->getMethodName(),
                 $this->getParamFields()
             );
+            $this->reset();
 
             if (!$result) {
                 $error = $this->client->getErrorMessage();

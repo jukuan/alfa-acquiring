@@ -1,6 +1,6 @@
 <?php
 
-use AlfaAcquiring\Api\LastOrdersForMerchantsMethod;
+use AlfaAcquiring\Api\GetBindingIdMethod;
 use AlfaAcquiring\RbsClient;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -11,14 +11,14 @@ $apiClient = $rbsClient
     ->enableTestMode() // for debug only
 ;
 
-$response = (new LastOrdersForMerchantsMethod($apiClient))
-    ->setFrom(new \DateTime('-1 day'))
+$response = (new GetBindingIdMethod($apiClient))
+    ->setClientId('cl123')
     ->run();
 
 print '<pre>';
-var_dump('Query:', $apiClient->getLastQuery());
-var_dump('HttpResponseCode:', $apiClient->getHttpResponseCode());
-
 var_dump($response->getErrorMessage());
 var_dump($response->getAllFields());
+echo '<hr/>';
+var_dump($response->getBindingId());
+var_dump($response->getExpiryDate());
 print '</pre>';
