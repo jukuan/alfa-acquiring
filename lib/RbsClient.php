@@ -9,7 +9,7 @@ use AlfaAcquiring\HttpClient\HttpRequestInterface;
 use AlfaAcquiring\Model\Order;
 use AlfaAcquiring\Response\BaseResponse;
 use AlfaAcquiring\Response\OrderRegistration;
-use AlfaAcquiring\Response\OrderStatus;
+use AlfaAcquiring\Response\OrderStatusResponse;
 
 class RbsClient
 {
@@ -166,15 +166,15 @@ class RbsClient
      * Use OrderStatusMethod{} instead
      *
      * @param string $orderId
-     * @return OrderStatus
+     * @return OrderStatusResponse
      */
-    public function getOrderStatus(string $orderId): OrderStatus
+    public function getOrderStatus(string $orderId): OrderStatusResponse
     {
         if (!$this->doMethod('getOrderStatusExtended.do', ['orderId' => $orderId])) {
-            return OrderStatus::initialiseFailed($this->errorMessage);
+            return OrderStatusResponse::initialiseFailed($this->errorMessage);
         }
 
-        return new OrderStatus((array) $this->client->getDecodedResponse());
+        return new OrderStatusResponse((array) $this->client->getDecodedResponse());
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\Response;
 
-class OrderStatus extends BaseResponse
+class OrderStatusResponse extends BaseResponse
 {
     private string $orderNumber;
     private int $orderStatus;
@@ -23,14 +23,15 @@ class OrderStatus extends BaseResponse
     {
         parent::__construct($fields);
 
-        $this->orderNumber = (string) ($fields['orderNumber'] ?? '');
-        $this->orderStatus = (int) ($fields['orderStatus'] ?? 0);
-        $this->actionCode = (int) ($fields['actionCode'] ?? 0);
-        $this->amount = (int) ($fields['amount'] ?? 0);
-        $this->date = (int) ($fields['date'] ?? 0);
+        $properties = $this->getInnerFields();
+        $this->orderNumber = (string) ($properties['orderNumber'] ?? '');
+        $this->orderStatus = (int) ($properties['orderStatus'] ?? 0);
+        $this->actionCode = (int) ($properties['actionCode'] ?? 0);
+        $this->amount = (int) ($properties['amount'] ?? 0);
+        $this->date = (int) ($properties['date'] ?? 0);
     }
 
-    public static function initialiseFailed(string $errorMsg): OrderStatus
+    public static function initialiseFailed(string $errorMsg): OrderStatusResponse
     {
         return (new static([]))
             ->setErrorFields([
