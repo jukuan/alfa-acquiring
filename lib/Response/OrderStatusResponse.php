@@ -23,12 +23,11 @@ class OrderStatusResponse extends BaseResponse
     {
         parent::__construct($fields);
 
-        $properties = $this->getInnerFields();
-        $this->orderNumber = (string) ($properties['orderNumber'] ?? '');
-        $this->orderStatus = (int) ($properties['orderStatus'] ?? 0);
-        $this->actionCode = (int) ($properties['actionCode'] ?? 0);
-        $this->amount = (int) ($properties['amount'] ?? 0);
-        $this->date = (int) ($properties['date'] ?? 0);
+        $this->orderNumber = (string) ($this->response['orderNumber'] ?? '');
+        $this->orderStatus = (int) ($this->response['orderStatus'] ?? 0);
+        $this->actionCode = (int) ($this->response['actionCode'] ?? 0);
+        $this->amount = (int) ($this->response['amount'] ?? 0);
+        $this->date = (int) ($this->response['date'] ?? 0);
     }
 
     public static function initialiseFailed(string $errorMsg): OrderStatusResponse
@@ -71,5 +70,15 @@ class OrderStatusResponse extends BaseResponse
         }
 
         return mb_strlen($this->orderNumber) > 0;
+    }
+
+    public function getCartAuthInfo(): array
+    {
+        return $this->response['cardAuthInfo'] ?? [];
+    }
+
+    public function getBindingInfo(): array
+    {
+        return $this->response['bindingInfo'] ?? [];
     }
 }

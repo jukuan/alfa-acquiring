@@ -45,8 +45,6 @@ class GetBindingsIdResponse extends BaseResponse
 
     protected function getBindingFields(): array
     {
-        $fields = $this->getInnerFields();
-
-        return $fields['bindings'][0] ?? [];
+        return $this->response['bindings'][0] ?? [];
     }
 }

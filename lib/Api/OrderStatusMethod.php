@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AlfaAcquiring\Api;
 
-use AlfaAcquiring\Response\OrderStatus;
+use AlfaAcquiring\Response\OrderStatusResponse;
 
 class OrderStatusMethod extends BaseApiMethod
 {
@@ -23,7 +23,7 @@ class OrderStatusMethod extends BaseApiMethod
         return isset($this->params[self::ORDER_FIELD]);
     }
 
-    public function run(): OrderStatus
+    public function run(): OrderStatusResponse
     {
         $error = null;
 
@@ -38,10 +38,10 @@ class OrderStatusMethod extends BaseApiMethod
         }
 
         if (null !== $error) {
-            return OrderStatus::initialiseFailed($error);
+            return OrderStatusResponse::initialiseFailed($error);
         }
 
-        return new OrderStatus(
+        return new OrderStatusResponse(
             (array) $this->client->getResponse()
         );
     }

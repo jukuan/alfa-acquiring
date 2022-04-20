@@ -17,9 +17,8 @@ class OrderRegistration extends BaseResponse
     {
         parent::__construct($fields);
 
-        $properties = $this->getInnerFields();
-        $this->orderId = (string) ($properties['orderId'] ?? '');
-        $this->formUrl = (string) ($properties['formUrl'] ?? '');
+        $this->orderId = (string) ($this->response['orderId'] ?? '');
+        $this->formUrl = (string) ($this->response['formUrl'] ?? '');
     }
 
     public static function initialiseFailed(string $errorMsg): OrderRegistration

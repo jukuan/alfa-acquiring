@@ -28,5 +28,6 @@ var_dump('HttpResponseCode:', $apiClient->getHttpResponseCode());
 var_dump('OrderNumber', $response->getOrderNumber());
 var_dump('OrderStatus', $response->getOrderStatus());
 
-var_dump($response);
+var_dump('CartAuthInfo', $response->getCartAuthInfo());
+var_dump('BindingInfo', $response->getBindingInfo());
 print '</pre>';

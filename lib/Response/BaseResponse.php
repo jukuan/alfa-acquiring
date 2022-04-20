@@ -8,9 +8,7 @@ use Exception;
 
 class BaseResponse implements ResponseInterface
 {
-    /**
-     * @var string[]
-     */
+    protected array $response = [];
     protected array $fields = [];
 
     protected ?Exception $error = null;
@@ -37,6 +35,7 @@ class BaseResponse implements ResponseInterface
     public function __construct(array $fields)
     {
         $this->fields = $fields;
+        $this->response = $this->findResponseFields();
         $this->checkErrorFields($this->fields);
     }
 
@@ -74,19 +73,31 @@ class BaseResponse implements ResponseInterface
 
     public function getField(string $fieldName): ?string
     {
-        return $this->fields[$fieldName] ?? null;
+        return $this->response[$fieldName] ?? $this->fields[$fieldName] ?? null;
     }
 
+    /**
+     * @deprecated
+     * Use getResponse() instead.
+     *
+     * That method might be used that for debug only.
+     * @return array
+     */
     public function getAllFields(): array
     {
         return $this->fields;
     }
 
-    protected function getInnerFields(): array
+    public function getResponse(): array
+    {
+        return $this->fields;
+    }
+
+    protected function findResponseFields(): array
     {
         foreach ($this->fields as $key => $list) {
             if (false !== strpos($key, 'fields') && is_array($list)) {
-                return $list ?? [];
+                return $list;
             }
         }
 
@@ -97,7 +108,7 @@ class BaseResponse implements ResponseInterface
     {
         foreach ($this->fields as $key => $list) {
             if (false !== strpos($key, 'error') && is_array($list)) {
-                return $list ?? [];
+                return $list;
             }
         }
 
