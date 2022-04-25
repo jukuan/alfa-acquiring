@@ -68,12 +68,14 @@ class CurlClient implements HttpRequestInterface
 
     private function decodeResponse(?string $response): void
     {
-        if (null !== $response && '' !== $response) {
-            try {
-                $this->decodedResponse = json_decode($response, true) ?: null;
-            } catch (Exception $exception) {
-                $this->exception = CurlException::create($exception);
-            }
+        if (null === $response || '' === $response) {
+            return;
+        }
+
+        try {
+            $this->decodedResponse = json_decode($response, true) ?: null;
+        } catch (Exception $exception) {
+            $this->exception = CurlException::create($exception);
         }
     }
 
@@ -90,7 +92,7 @@ class CurlClient implements HttpRequestInterface
         $response = $this->getHttpResponse();
         $this->httpCode = $this->getCurlHttpCode();
 
-        if (is_string($response) && self::isSuccessHttpStatusCode($this->httpCode)) {
+        if (is_string($response)) {
             $this->decodeResponse($response);
         } else {
             $this->setError('Bad response', $this->ch);

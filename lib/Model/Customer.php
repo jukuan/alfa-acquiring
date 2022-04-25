@@ -8,9 +8,9 @@ use AlfaAcquiring\Helper\StringHelper;
 
 class Customer
 {
-    private ?string $email = null;
+    protected ?string $email = null;
 
-    private ?string $phone = null;
+    protected ?string $phone = null;
 
     public function __construct(?string $email, ?string $phone = null)
     {
@@ -38,7 +38,7 @@ class Customer
         return $this->email;
     }
 
-    private function setEmail(?string $email): void
+    protected function setEmail(?string $email): void
     {
         if (null === $email || '' === $email) {
             $this->email = null;
@@ -52,7 +52,7 @@ class Customer
         return $this->phone;
     }
 
-    private function setPhone(?string $phone): void
+    protected function setPhone(?string $phone): void
     {
         if (null === $phone || '' === $phone) {
             $this->phone = null;

@@ -10,13 +10,13 @@ class Order
 {
     use LoggerTrait;
 
-    private string $orderNumber = '';
+    protected string $orderNumber = '';
 
-    private int $amount;
+    protected int $amount = 0;
 
-    private string $returnUrl = '';
+    protected string $returnUrl = '';
 
-    private ?Customer $customer = null;
+    protected ?Customer $customer = null;
 
     public function __construct(int $amount)
     {

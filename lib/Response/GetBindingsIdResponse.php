@@ -6,7 +6,7 @@ namespace AlfaAcquiring\Response;
 
 class GetBindingsIdResponse extends BaseResponse
 {
-    private array $bindings;
+    protected array $bindings;
 
     public static function initialiseFailed(string $errorMsg, int $errorCode = 0): GetBindingsIdResponse
     {

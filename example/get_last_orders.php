@@ -16,9 +16,10 @@ $response = (new LastOrdersForMerchantsMethod($apiClient))
     ->run();
 
 print '<pre>';
-var_dump('Query:', $apiClient->getLastQuery());
+var_dump('Last Query:', $apiClient->getLastQuery());
+var_dump('Last Method Params:', $apiClient->getLastMethodParams());
 var_dump('HttpResponseCode:', $apiClient->getHttpResponseCode());
 
 var_dump($response->getErrorMessage());
-var_dump($response->getAllFields());
+//var_dump($response->getAllFields());
 print '</pre>';

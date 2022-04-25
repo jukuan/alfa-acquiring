@@ -6,9 +6,9 @@ namespace AlfaAcquiring\Response;
 
 class OrderRegistration extends BaseResponse
 {
-    private string $orderId = '';
+    protected string $orderId = '';
 
-    private string $formUrl = '';
+    protected string $formUrl = '';
 
     /**
      * @param array $fields
@@ -34,12 +34,12 @@ class OrderRegistration extends BaseResponse
         return null !== $this->error;
     }
 
-    private function hasOrderId(): bool
+    protected function hasOrderId(): bool
     {
         return strlen($this->orderId) > 0;
     }
 
-    private function hasFormUrl(): bool
+    protected function hasFormUrl(): bool
     {
         return strlen($this->formUrl) > 0;
     }

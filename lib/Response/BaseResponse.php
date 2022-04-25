@@ -15,29 +15,6 @@ class BaseResponse implements ResponseInterface
 
     /**
      * @param array $fields
-     *
-     * @return bool
-     */
-    protected function checkErrorFields(array $fields): bool
-    {
-        if (!isset($fields['errorMessage'])) {
-            $fields = $this->getErrorFields();
-        }
-
-        $errorCode = (int) ($fields['errorCode'] ?? 0);
-        $errorMsg = $fields['errorMessage'] ?? '';
-
-        if ($errorCode > 0 || '' !== $errorMsg) {
-            $this->setErrorFields($fields);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param array $fields
      */
     public function __construct(array $fields)
     {
@@ -55,16 +32,16 @@ class BaseResponse implements ResponseInterface
             ]);
     }
 
-    protected function setErrorException(Exception $exception): BaseResponse
+    protected function setErrorException(Exception $exception): void
     {
         $this->error = $exception;
-
-        return $this;
     }
 
     protected function setErrorMessageCode(string $msg, int $code = 0): BaseResponse
     {
-        $this->setErrorException(new Exception($msg, $code));
+        if ('' !== $msg || $code > 0) {
+            $this->setErrorException(new Exception($msg, $code));
+        }
 
         return $this;
     }
@@ -95,7 +72,11 @@ class BaseResponse implements ResponseInterface
 
     public function getField(string $fieldName): ?string
     {
-        return $this->response[$fieldName] ?? $this->fields[$fieldName] ?? null;
+        if (isset($this->fields[$fieldName])) {
+            return (string) $this->fields[$fieldName];
+        }
+
+        return null;
     }
 
     /**
@@ -113,6 +94,11 @@ class BaseResponse implements ResponseInterface
     public function getResponse(): array
     {
         return $this->fields;
+    }
+
+    public function __sleep()
+    {
+        return ['fields', 'response', 'error'];
     }
 
     protected function findResponseFields(): array
@@ -137,8 +123,41 @@ class BaseResponse implements ResponseInterface
         return [];
     }
 
-    public function __sleep()
+    protected function checkErrorFields(array $fields): bool
     {
-        return ['fields', 'response', 'error'];
+        foreach ($fields as $key => $value) {
+            if (false !== strpos($key, 'error') && $value instanceof Exception) {
+                $this->setErrorException($value);
+
+                return true;
+            }
+
+            if (is_array($value) && isset($value['errorMessage'])) {
+                $this->setErrorFields($value);
+
+                return true;
+            }
+        }
+
+        if (!isset($fields['errorMessage'])) {
+            $fields = $this->getErrorFields();
+        }
+
+        if (!isset($fields['errorMessage'])) {
+            $fields = [
+                'errorMessage' => $this->getField('errorMessage'),
+                'errorCode' => $this->getField('errorCode'),
+            ];
+        }
+
+        $errorCode = (int) ($fields['errorCode'] ?? 0);
+        $errorMsg = $fields['errorMessage'] ?? '';
+        $hasError = $errorCode > 0 || '' !== $errorMsg;
+
+        if ($hasError) {
+            $this->setErrorFields($fields);
+        }
+
+        return $hasError;
     }
 }

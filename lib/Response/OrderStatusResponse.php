@@ -6,11 +6,11 @@ namespace AlfaAcquiring\Response;
 
 class OrderStatusResponse extends BaseResponse
 {
-    private string $orderNumber;
-    private int $orderStatus;
-    private int $actionCode;
-    private int $amount; // TODO: check if is that really always integer?
-    private int $date;
+    protected string $orderNumber;
+    protected int $orderStatus;
+    protected int $actionCode;
+    protected int $amount; // TODO: check if is that really always integer?
+    protected int $date;
 
 //    private string $orderDescription = '';
 //    private array $merchantOrderParams = [];
