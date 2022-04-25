@@ -6,7 +6,7 @@ namespace AlfaAcquiring\Response;
 
 interface ResponseInterface
 {
-    public static function initialiseFailed(string $errorMsg): ResponseInterface;
+    public static function initialiseFailed(string $errorMsg, int $errorCode = 0): ResponseInterface;
 
     public function getErrorMessage(): ?string;
 

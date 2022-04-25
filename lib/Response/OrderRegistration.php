@@ -11,7 +11,7 @@ class OrderRegistration extends BaseResponse
     private string $formUrl = '';
 
     /**
-     * @param array<array-key, mixed> $fields
+     * @param array $fields
      */
     public function __construct(array $fields)
     {
@@ -21,7 +21,7 @@ class OrderRegistration extends BaseResponse
         $this->formUrl = (string) ($this->response['formUrl'] ?? '');
     }
 
-    public static function initialiseFailed(string $errorMsg): OrderRegistration
+    public static function initialiseFailed(string $errorMsg, int $errorCode = 0): OrderRegistration
     {
         return (new static([]))
             ->setErrorFields([

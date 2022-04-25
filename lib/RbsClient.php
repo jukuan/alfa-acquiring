@@ -63,6 +63,7 @@ class RbsClient
     private string $errorMessage = '';
     private string $login;
     private string $password;
+    private array $lastParams = [];
 
     public function __construct(
         string $login,
@@ -97,7 +98,9 @@ class RbsClient
 
     private function reset(): void
     {
+        $this->paymentStage = self::PAYMENT_STAGE_ONE;
         $this->errorMessage = '';
+        $this->lastParams = [];
     }
 
     public function getErrorMessage(): string
@@ -121,6 +124,7 @@ class RbsClient
     {
         $this->reset();
 
+        $this->lastParams = $params;
         $params['userName'] = $this->login;
         $params['password'] = $this->password;
 
@@ -148,7 +152,7 @@ class RbsClient
 
     public function doRest(string $method, array $params = []): bool
     {
-        return $this->doMethod($method, $params, true);
+        return $this->doMethod($method, $params);
     }
 
     public function getResponseFields(): array
@@ -227,6 +231,11 @@ class RbsClient
     public function getLastQuery(): string
     {
         return $this->client->getLastQuery();
+    }
+
+    public function getLastMethodParams(): array
+    {
+        return $this->lastParams;
     }
 
     public function getHttpResponseCode(): int

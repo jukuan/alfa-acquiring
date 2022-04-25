@@ -6,6 +6,7 @@ namespace AlfaAcquiring\Api;
 
 use AlfaAcquiring\Response\LastOrdersForMerchants;
 use AlfaAcquiring\Response\BaseResponse;
+use DateTimeImmutable;
 use DateTimeInterface;
 
 class LastOrdersForMerchantsMethod extends BaseApiMethod
@@ -139,7 +140,7 @@ class LastOrdersForMerchantsMethod extends BaseApiMethod
     private function getFrom(): DateTimeInterface
     {
         if ($this->from === null) {
-            return new \DateTime('-7 days ago');
+            return new DateTimeImmutable('-7 days ago');
         }
 
         return $this->from;
@@ -151,7 +152,7 @@ class LastOrdersForMerchantsMethod extends BaseApiMethod
     private function getTo(): DateTimeInterface
     {
         if ($this->to === null) {
-            return new \DateTime();
+            return new DateTimeImmutable('now');
         }
 
         return $this->to;

@@ -33,19 +33,20 @@ class CurlClient implements HttpRequestInterface
 
     private function buildCurlOptions(string $url, array $postFields = []): array
     {
-        $this->lastQuery = $url;
-
         $options = [
             CURLOPT_VERBOSE => true,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_AUTOREFERER => true,
             CURLOPT_ENCODING => '',
         ];
 
         if ($this->timeout > 0) {
             $options[CURLOPT_TIMEOUT] = $this->timeout;
+            $options[CURLOPT_CONNECTTIMEOUT] = $this->timeout;
         }
 
         if (count($postFields) > 0) {
@@ -53,12 +54,14 @@ class CurlClient implements HttpRequestInterface
             $options[CURLOPT_POSTFIELDS] = http_build_query($postFields, '', '&');
 
             $separator = strpos($url, '?') === false ? '?' : '&';
-            $this->lastQuery .= $separator . $options[CURLOPT_POSTFIELDS];
+            $url .= $separator . $options[CURLOPT_POSTFIELDS];
         }
 
         if (count($this->httpHeaders) > 0) {
             $options[CURLOPT_HTTPHEADER] = $this->httpHeaders;
         }
+
+        $this->lastQuery = $url;
 
         return $options;
     }
@@ -174,13 +177,13 @@ class CurlClient implements HttpRequestInterface
     }
 
     /**
-     * @param string[] $httpHeaders
+     * @param string[] $headers
      *
      * @return CurlClient
      */
-    public function setHttpHeaders(array $httpHeaders): CurlClient
+    public function setHttpHeaders(array $headers): CurlClient
     {
-        $this->httpHeaders = $httpHeaders;
+        $this->httpHeaders = $headers;
 
         return $this;
     }

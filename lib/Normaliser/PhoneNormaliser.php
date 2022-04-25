@@ -16,7 +16,7 @@ class PhoneNormaliser extends AbstractNormaliser implements ClientInputNormalise
             return '';
         }
 
-        $value = $this->phonetize($value);
+        $value = $this->makePhoneFormat($value);
 
         if ('+' === $value[0]) {
             $withoutCode = substr($value, 1);
@@ -35,7 +35,7 @@ class PhoneNormaliser extends AbstractNormaliser implements ClientInputNormalise
         return $value;
     }
 
-    private function phonetize(string $value): string
+    private function makePhoneFormat(string $value): string
     {
         return preg_replace("/[^0-9+]/", '', $value);
     }

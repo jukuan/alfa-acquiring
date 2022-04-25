@@ -14,23 +14,30 @@ class BaseResponse implements ResponseInterface
     protected ?Exception $error = null;
 
     /**
-     * @param array<array-key, mixed> $fields
+     * @param array $fields
      *
      * @return bool
      */
     protected function checkErrorFields(array $fields): bool
     {
-        $errorCode = (int) ($fields['errorCode'] ?? 0);
-
-        if ($errorCode > 0) {
-            $this->setErrorFields($fields);
+        if (!isset($fields['errorMessage'])) {
+            $fields = $this->getErrorFields();
         }
 
-        return $errorCode > 0;
+        $errorCode = (int) ($fields['errorCode'] ?? 0);
+        $errorMsg = $fields['errorMessage'] ?? '';
+
+        if ($errorCode > 0 || '' !== $errorMsg) {
+            $this->setErrorFields($fields);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * @param array<array-key, mixed> $fields
+     * @param array $fields
      */
     public function __construct(array $fields)
     {
@@ -39,18 +46,33 @@ class BaseResponse implements ResponseInterface
         $this->checkErrorFields($this->fields);
     }
 
-    public static function initialiseFailed(string $errorMsg): BaseResponse
+    public static function initialiseFailed(string $errorMsg, int $errorCode = 0): BaseResponse
     {
         return (new static([]))
             ->setErrorFields([
-                'errorMessage' => $errorMsg
+                'errorMessage' => $errorMsg,
+                'errorCode' => $errorCode,
             ]);
+    }
+
+    protected function setErrorException(Exception $exception): BaseResponse
+    {
+        $this->error = $exception;
+
+        return $this;
+    }
+
+    protected function setErrorMessageCode(string $msg, int $code = 0): BaseResponse
+    {
+        $this->setErrorException(new Exception($msg, $code));
+
+        return $this;
     }
 
     protected function setErrorFields(array $fields): BaseResponse
     {
-        $this->error = new Exception(
-            (string) ($fields['errorMessage'] ?? ''),
+        $this->setErrorMessageCode(
+            $fields['errorMessage'] ?? '',
             (int) ($fields['errorCode'] ?? 0)
         );
 
@@ -113,5 +135,10 @@ class BaseResponse implements ResponseInterface
         }
 
         return [];
+    }
+
+    public function __sleep()
+    {
+        return ['fields', 'response', 'error'];
     }
 }

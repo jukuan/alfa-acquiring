@@ -8,7 +8,7 @@ class GetBindingsIdResponse extends BaseResponse
 {
     private array $bindings;
 
-    public static function initialiseFailed(string $errorMsg): GetBindingsIdResponse
+    public static function initialiseFailed(string $errorMsg, int $errorCode = 0): GetBindingsIdResponse
     {
         return (new GetBindingsIdResponse([]))
             ->setErrorFields([

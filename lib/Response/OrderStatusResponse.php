@@ -17,7 +17,7 @@ class OrderStatusResponse extends BaseResponse
 //    private array $transactionAttributes = [];
 
     /**
-     * @param array<array-key, mixed> $fields
+     * @param array $fields
      */
     public function __construct(array $fields)
     {
@@ -30,7 +30,7 @@ class OrderStatusResponse extends BaseResponse
         $this->date = (int) ($this->response['date'] ?? 0);
     }
 
-    public static function initialiseFailed(string $errorMsg): OrderStatusResponse
+    public static function initialiseFailed(string $errorMsg, int $errorCode = 0): OrderStatusResponse
     {
         return (new static([]))
             ->setErrorFields([

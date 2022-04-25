@@ -20,7 +20,7 @@ class Order
 
     public function __construct(int $amount)
     {
-        $this->amount = $amount > 0 ? $amount : 0;
+        $this->amount = max($amount, 0);
     }
 
     public static function forCustomer(int $amount, ?string $email, ?string $phone = null): Order
