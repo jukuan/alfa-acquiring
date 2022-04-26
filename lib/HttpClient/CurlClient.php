@@ -190,9 +190,11 @@ class CurlClient implements HttpRequestInterface
         return $this;
     }
 
-    public function setOption(int $name, $value): void
+    public function setOption(int $name, $value): CurlClient
     {
         curl_setopt($this->ch, $name, $value);
+
+        return $this;
     }
 
     public function getInfo(?int $name)

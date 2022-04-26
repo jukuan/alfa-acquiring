@@ -23,5 +23,7 @@ class OrderStatusBel extends OrderStatus
             self::STATUS_ACS_INITIALISED => 'Ініцыявана ACS аўтарызацыя',
             self::STATUS_DECLINED => 'Аўтарызацыя адхілена',
         };
+
+        return $this->orderLabel;
     }
 }

@@ -10,7 +10,7 @@ interface HttpRequestInterface
      * @param int $name
      * @param mixed $value
      */
-    public function setOption(int $name, $value): void;
+    public function setOption(int $name, $value): HttpRequestInterface;
 
     public function setHttpHeaders(array $headers): HttpRequestInterface;
 
