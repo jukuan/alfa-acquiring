@@ -34,11 +34,17 @@ class BaseResponse implements ResponseInterface
 
     protected function setErrorException(Exception $exception): void
     {
-        $this->error = $exception;
+        if (!self::isSuccessMessageException($exception)) {
+            $this->error = $exception;
+        }
     }
 
     protected function setErrorMessageCode(string $msg, int $code = 0): BaseResponse
     {
+        if (self::isSuccessMessage($msg)) {
+            return $this;
+        }
+
         if ('' !== $msg || $code > 0) {
             $this->setErrorException(new Exception($msg, $code));
         }
@@ -67,7 +73,11 @@ class BaseResponse implements ResponseInterface
 
     public function isValid(): bool
     {
-        return null === $this->error;
+        if (null === $this->error) {
+            return true;
+        }
+
+        return !self::isSuccessMessageException($this->error);
     }
 
     public function getField(string $fieldName): ?string
@@ -152,6 +162,11 @@ class BaseResponse implements ResponseInterface
 
         $errorCode = (int) ($fields['errorCode'] ?? 0);
         $errorMsg = $fields['errorMessage'] ?? '';
+
+        if (self::isSuccessMessage($errorMsg)) {
+            $errorMsg = '';
+        }
+
         $hasError = $errorCode > 0 || '' !== $errorMsg;
 
         if ($hasError) {
@@ -159,5 +174,15 @@ class BaseResponse implements ResponseInterface
         }
 
         return $hasError;
+    }
+
+    protected static function isSuccessMessage(string $msg): bool
+    {
+        return in_array($msg, ['Success', 'Успешно'], true);
+    }
+
+    protected static function isSuccessMessageException(Exception $e): bool
+    {
+        return self::isSuccessMessage($e->getMessage());
     }
 }

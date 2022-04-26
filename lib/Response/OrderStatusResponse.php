@@ -81,4 +81,9 @@ class OrderStatusResponse extends BaseResponse
     {
         return $this->response['bindingInfo'] ?? [];
     }
+
+    public function getPaymentAmountInfo(): array
+    {
+        return $this->response['paymentAmountInfo'] ?? [];
+    }
 }
