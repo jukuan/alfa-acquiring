@@ -22,7 +22,7 @@
     "prefer-stable": true,
     "sort-packages": true,
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
