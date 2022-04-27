@@ -71,6 +71,15 @@ class BaseResponse implements ResponseInterface
         return $this->error->getMessage();
     }
 
+    public function getErrorCode(): int
+    {
+        if (null === $this->error) {
+            return 0;
+        }
+
+        return (int) $this->error->getCode();
+    }
+
     public function isValid(): bool
     {
         if (null === $this->error) {

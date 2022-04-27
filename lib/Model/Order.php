@@ -16,9 +16,11 @@ class Order
 
     protected string $returnUrl = '';
 
+    protected string $failUrl = '';
+
     protected ?Customer $customer = null;
 
-    public function __construct(int $amount)
+    public function __construct(int $amount = 0)
     {
         $this->amount = max($amount, 0);
     }
@@ -106,6 +108,18 @@ class Order
     public function setReturnUrl(string $returnUrl): Order
     {
         $this->returnUrl = $returnUrl;
+
+        return $this;
+    }
+
+    public function getFailUrl(): string
+    {
+        return $this->failUrl;
+    }
+
+    public function setFailUrl(string $failUrl): Order
+    {
+        $this->failUrl = $failUrl;
 
         return $this;
     }

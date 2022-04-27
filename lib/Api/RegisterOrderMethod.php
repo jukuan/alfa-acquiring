@@ -33,7 +33,7 @@ class RegisterOrderMethod extends BaseApiMethod implements PayableInterface, Tra
 
     public function enableOneStagePayment(): self
     {
-        $this->paymentStage = self::PAYMENT_STAGE_TWO;
+        $this->paymentStage = self::PAYMENT_STAGE_ONE;
 
         return $this;
     }

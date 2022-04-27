@@ -112,7 +112,7 @@ class RbsClient
     {
         $url = $this->isTestMode ? self::ENDPOINT_TEST : self::ENDPOINT_PROD;
 
-        return $url . $method;
+        return $url . trim($method, '/');
     }
 
     private function prepareRequestUrl(string $method): string

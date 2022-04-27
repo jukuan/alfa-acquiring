@@ -26,6 +26,11 @@ abstract class BaseOrderStatus
         return self::STATUS_WHOLE_AUTHORISED === $this->orderStatus;
     }
 
+    public function isProcessed(): bool
+    {
+        return in_array($this->orderStatus, [self::STATUS_ON_HOLD, self::STATUS_WHOLE_AUTHORISED], true);
+    }
+
     public function isInProgress(): bool
     {
         return in_array($this->orderStatus, [
